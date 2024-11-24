@@ -1,41 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Scanner with AR</title>
-  
-  <!-- Include AR.js and Three.js for AR functionality -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.125.1/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/ar.js/aframe/build/aframe-ar.js"></script>
-  
-  <!-- Include jsQR for QR code scanning -->
-  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-  
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-    video {
-      display: none; /* Hide the video stream */
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner for Images and Models</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <style>
+        #scanner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        #qr-video {
+            width: 100%;
+            max-width: 640px;
+        }
+        canvas { display: none; }
+        #model-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        #image-container {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #scanned-image {
+            max-width: 100%;
+        }
+    </style>
 </head>
 <body>
+    <h1 style="text-align:center;">QR Code Scanner for Images & Models</h1>
+    
+    <!-- QR Code Scanner -->
+    <div id="scanner">
+        <video id="qr-video" autoplay></video>
+        <canvas id="qr-canvas"></canvas>
+    </div>
 
-  <!-- QR Code scanning video feed -->
-  <video id="video" width="320" height="240" autoplay></video>
+    <!-- Image Container (for images from QR code) -->
+    <div id="image-container">
+        <img id="scanned-image" src="" alt="Scanned Image"/>
+    </div>
 
-  <!-- AR.js (A-Frame) scene to display AR content -->
-  <a-scene embedded arjs>
-    <a-marker preset="hiro">
-      <a-image id="qrImage" width="2" height="2" position="0 0 0" src="" scale="2 2 2"></a-image>
-    </a-marker>
-    <a-entity camera></a-entity>
-  </a-scene>
+    <!-- A-Frame Scene for 3D Models -->
+    <div id="model-container" style="display:none;">
+        <a-scene embedded>
+            <a-light type="ambient" color="#ffffff"></a-light>
+            <a-light type="point" position="2 4 4"></a-light>
+            <a-camera position="0 1.6 0" look-controls></a-camera>
+            <a-entity id="image-placeholder" position="0 1 -3" geometry="primitive: plane; width: 4; height: 3" material="color: #7f7f7f"></a-entity>
+        </a-scene>
+    </div>
 
-  <script src="app.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
