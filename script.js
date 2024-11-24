@@ -8,7 +8,7 @@ const arImage = document.getElementById('arImage');
 navigator.mediaDevices.getUserMedia({ video: true })
   .then((stream) => {
     video.srcObject = stream;
-    video.setAttribute('playsinline', true);
+    video.setAttribute('playsinline', true);  // For mobile devices
     video.play();
     scanQRCode();  // Start scanning for QR code
   })
