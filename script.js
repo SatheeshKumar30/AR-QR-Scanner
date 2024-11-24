@@ -40,23 +40,38 @@ window.addEventListener('load', () => {
 
 // Display the content based on QR code URL
 function displayContent(content) {
-    // Check if the URL points to an image or a 3D model (e.g., GLB file)
-    if (content.endsWith('.jpg') || content.endsWith('.png')) {
-        // Display image
-        scannedImage.src = content;
-        scannedImage.style.display = "block";
-        imageContainer.style.display = "block";
-        modelContainer.style.display = "none";
-    } else if (content.endsWith('.glb') || content.endsWith('.gltf')) {
-        // Display 3D model in A-Frame
-        const modelPlaceholder = document.getElementById('model-placeholder');
-        modelPlaceholder.setAttribute('gltf-model', content);
-        modelPlaceholder.setAttribute('scale', '1 1 1'); // Adjust size if needed
-        modelPlaceholder.setAttribute('rotation', '0 45 0'); // Optional rotation
-        modelContainer.style.display = "block";
-        imageContainer.style.display = "none";
+    console.log('QR Code Content:', content);  // Log the content of the QR code
+
+    // Check if the content is a valid URL and whether it points to an image or 3D model
+    if (isValidUrl(content)) {
+        if (content.endsWith('.jpg') || content.endsWith('.png')) {
+            // Display image
+            scannedImage.src = content;
+            scannedImage.style.display = "block";
+            imageContainer.style.display = "block";
+            modelContainer.style.display = "none";
+        } else if (content.endsWith('.glb') || content.endsWith('.gltf')) {
+            // Display 3D model in A-Frame
+            const modelPlaceholder = document.getElementById('model-placeholder');
+            modelPlaceholder.setAttribute('gltf-model', content);
+            modelPlaceholder.setAttribute('scale', '1 1 1'); // Adjust size if needed
+            modelPlaceholder.setAttribute('rotation', '0 45 0'); // Optional rotation
+            modelContainer.style.display = "block";
+            imageContainer.style.display = "none";
+        } else {
+            alert('Unsupported content type. Please scan a valid QR code');
+        }
     } else {
-        // Handle invalid QR code data
-        alert('Invalid QR code content');
+        alert('Invalid QR code URL');
+    }
+}
+
+// Helper function to check if URL is valid
+function isValidUrl(url) {
+    try {
+        new URL(url);  // Try to create a URL object to check if it's a valid URL
+        return true;
+    } catch (e) {
+        return false;
     }
 }
