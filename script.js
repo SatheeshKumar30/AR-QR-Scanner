@@ -34,6 +34,7 @@ window.addEventListener('load', () => {
         }, 500);
     }).catch(error => {
         console.error("Error accessing camera:", error);
+        alert("Camera access error. Please check your camera and permissions.");
     });
 });
 
