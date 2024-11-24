@@ -13,7 +13,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            display: none; /* Hide scanner initially */
+            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 10;
@@ -27,25 +27,14 @@
             margin-top: 20px;
             text-align: center;
         }
-        #start-scan-button {
-            display: block;
-            margin: 0 auto;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
+        #scanned-image {
+            max-width: 100%;
         }
     </style>
 </head>
 <body>
     <h1 style="text-align:center;">QR Code Scanner for 3D Models & Images</h1>
     
-    <!-- Button to start scanning -->
-    <button id="start-scan-button">Start Scanning</button>
-
     <!-- QR code scanner -->
     <div id="scanner">
         <video id="qr-video" autoplay></video>
@@ -66,7 +55,7 @@
             <a-entity id="model-placeholder" position="0 1 -3"></a-entity>
         </a-scene>
     </div>
-    
+
     <!-- Link to the external JavaScript file -->
     <script src="script.js"></script>
 </body>
