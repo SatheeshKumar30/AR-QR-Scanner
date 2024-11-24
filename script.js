@@ -1,4 +1,3 @@
-const startScanButton = document.getElementById('start-scan-button');
 const video = document.getElementById('qr-video');
 const canvas = document.getElementById('qr-canvas');
 const context = canvas.getContext('2d');
@@ -7,25 +6,28 @@ const modelContainer = document.getElementById('model-container');
 const imageContainer = document.getElementById('image-container');
 const scanner = document.getElementById('scanner');
 
-// Start video feed when the button is clicked
-startScanButton.addEventListener('click', () => {
-    // Show the scanner and hide the button
+// Start the QR scanner as soon as the page loads
+window.addEventListener('load', () => {
+    // Show the scanner
     scanner.style.display = 'flex';
-    startScanButton.style.display = 'none';
 
-    navigator.mediaDevices.getUserMedia({ 
+    // Start the camera stream
+    navigator.mediaDevices.getUserMedia({
         video: { facingMode: { exact: "environment" } } // Use back camera
     }).then(stream => {
         video.srcObject = stream;
 
+        // Start scanning at intervals
         setInterval(() => {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+            // Get image data and scan QR
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             const code = jsQR(imageData.data, imageData.width, imageData.height);
 
+            // If QR code is detected
             if (code) {
                 console.log('QR Code detected:', code.data);
                 displayContent(code.data); // Show content based on QR code URL
