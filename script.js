@@ -1,14 +1,13 @@
 const video = document.getElementById('qr-video');
 const canvas = document.getElementById('qr-canvas');
 const context = canvas.getContext('2d');
-const modelContainer = document.getElementById('model-container');
-const scanner = document.getElementById('scanner');
-const imagePlaceholder = document.getElementById('image-placeholder');
+const arContainer = document.getElementById('ar-container');
+const modelPlaceholder = document.getElementById('model-placeholder');
 
 // Start the QR scanner as soon as the page loads
 window.addEventListener('load', () => {
     // Show the scanner
-    scanner.style.display = 'flex';
+    document.getElementById('scanner').style.display = 'flex';
 
     // Start the camera stream
     navigator.mediaDevices.getUserMedia({
@@ -43,10 +42,19 @@ function displayContent(content) {
     console.log('QR Code Content:', content);  // Log the content of the QR code
 
     // Check if the URL points to an image (e.g., JPG, PNG)
-    if (content.endsWith('.jpg') || content.endsWith('.png') || content.endsWith('.jpeg')) {
-        // Display image in the virtual world
-        imagePlaceholder.setAttribute('material', `src: ${content}`);
-        modelContainer.style.display = "block"; // Show 3D model container
+    if (content.endsWith('.jpg') || content.endsWith('.jpeg') || content.endsWith('.png')) {
+        // Display image in AR
+        arContainer.style.display = "block"; // Show the AR container
+        modelPlaceholder.setAttribute('geometry', 'primitive: plane; width: 4; height: 3');
+        modelPlaceholder.setAttribute('material', 'src: url(' + content + ')');
+        modelPlaceholder.setAttribute('scale', '1 1 1');
+        modelPlaceholder.setAttribute('rotation', '0 45 0'); // Optional rotation
+    } else if (content.endsWith('.glb') || content.endsWith('.gltf')) {
+        // Display 3D model in AR
+        arContainer.style.display = "block"; // Show the AR container
+        modelPlaceholder.setAttribute('gltf-model', content);
+        modelPlaceholder.setAttribute('scale', '1 1 1');
+        modelPlaceholder.setAttribute('rotation', '0 45 0'); // Optional rotation
     } else {
         // Handle unsupported content types
         alert('Unsupported content type. Please scan a valid QR code');
