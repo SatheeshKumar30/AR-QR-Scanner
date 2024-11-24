@@ -5,6 +5,7 @@ const modelContainer = document.getElementById('model-container');
 const imageContainer = document.getElementById('image-container');
 const scannedImage = document.getElementById('scanned-image');
 const imagePlaceholder = document.getElementById('image-placeholder');
+const scanner = document.getElementById('scanner');
 
 // Start the QR scanner as soon as the page loads
 window.addEventListener('load', () => {
@@ -31,6 +32,9 @@ window.addEventListener('load', () => {
             if (code) {
                 console.log('QR Code detected:', code.data);
                 displayContent(code.data); // Show content based on QR code URL
+
+                // Hide the scanner after QR code is detected
+                scanner.style.display = 'none';
             }
         }, 500);
     }).catch(error => {
