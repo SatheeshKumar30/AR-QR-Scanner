@@ -27,9 +27,6 @@
             margin-top: 20px;
             text-align: center;
         }
-        #scanned-image {
-            max-width: 100%;
-        }
     </style>
 </head>
 <body>
@@ -39,11 +36,6 @@
     <div id="scanner">
         <video id="qr-video" autoplay></video>
         <canvas id="qr-canvas"></canvas>
-    </div>
-    
-    <!-- Image container -->
-    <div id="image-container" style="text-align:center;">
-        <img id="scanned-image" src="" alt="Scanned Image" style="max-width: 100%;"/>
     </div>
     
     <!-- A-Frame scene for 3D models -->
@@ -56,7 +48,7 @@
         </a-scene>
     </div>
 
-    <!-- Link to the external JavaScript file -->
+    <!-- Link to external JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>
