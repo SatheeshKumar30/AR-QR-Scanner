@@ -1,9 +1,7 @@
 const video = document.getElementById('qr-video');
 const canvas = document.getElementById('qr-canvas');
 const context = canvas.getContext('2d');
-const scannedImage = document.getElementById('scanned-image');
 const modelContainer = document.getElementById('model-container');
-const imageContainer = document.getElementById('image-container');
 const scanner = document.getElementById('scanner');
 
 // Start the QR scanner as soon as the page loads
@@ -42,36 +40,23 @@ window.addEventListener('load', () => {
 function displayContent(content) {
     console.log('QR Code Content:', content);  // Log the content of the QR code
 
-    // Check if the content is a valid URL and whether it points to an image or 3D model
-    if (isValidUrl(content)) {
-        if (content.endsWith('.jpg') || content.endsWith('.png')) {
-            // Display image
-            scannedImage.src = content;
-            scannedImage.style.display = "block";
-            imageContainer.style.display = "block";
-            modelContainer.style.display = "none";
-        } else if (content.endsWith('.glb') || content.endsWith('.gltf')) {
-            // Display 3D model in A-Frame
-            const modelPlaceholder = document.getElementById('model-placeholder');
-            modelPlaceholder.setAttribute('gltf-model', content);
-            modelPlaceholder.setAttribute('scale', '1 1 1'); // Adjust size if needed
-            modelPlaceholder.setAttribute('rotation', '0 45 0'); // Optional rotation
-            modelContainer.style.display = "block";
-            imageContainer.style.display = "none";
-        } else {
-            alert('Unsupported content type. Please scan a valid QR code');
-        }
+    // Check if the URL points to an image or a 3D model (e.g., GLB file)
+    if (content.endsWith('.jpg') || content.endsWith('.png') || content.endsWith('.jpeg')) {
+        // Display image (but do not show the image container while scanning)
+        const scannedImage = new Image();
+        scannedImage.src = content;
+        scannedImage.style.maxWidth = "100%";
+        document.body.appendChild(scannedImage);
+        modelContainer.style.display = "none";
+    } else if (content.endsWith('.glb') || content.endsWith('.gltf')) {
+        // Display 3D model in A-Frame
+        const modelPlaceholder = document.getElementById('model-placeholder');
+        modelPlaceholder.setAttribute('gltf-model', content);
+        modelPlaceholder.setAttribute('scale', '1 1 1'); // Adjust size if needed
+        modelPlaceholder.setAttribute('rotation', '0 45 0'); // Optional rotation
+        modelContainer.style.display = "block";
     } else {
-        alert('Invalid QR code URL');
-    }
-}
-
-// Helper function to check if URL is valid
-function isValidUrl(url) {
-    try {
-        new URL(url);  // Try to create a URL object to check if it's a valid URL
-        return true;
-    } catch (e) {
-        return false;
+        // Handle unsupported content types
+        alert('Unsupported content type. Please scan a valid QR code');
     }
 }
