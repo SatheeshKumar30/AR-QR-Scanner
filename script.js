@@ -6,11 +6,18 @@ const imageContainer = document.getElementById('image-container');
 const scannedImage = document.getElementById('scanned-image');
 const imagePlaceholder = document.getElementById('image-placeholder');
 const scanner = document.getElementById('scanner');
+const rescanButton = document.getElementById('rescan-button');
 
 // Start the QR scanner as soon as the page loads
 window.addEventListener('load', () => {
+    startScanner();
+});
+
+// Function to start the scanner
+function startScanner() {
     // Show the scanner
-    document.getElementById('scanner').style.display = 'flex';
+    scanner.style.display = 'flex';
+    rescanButton.style.display = 'none'; // Hide the rescan button initially
 
     // Start the camera stream
     navigator.mediaDevices.getUserMedia({
@@ -41,7 +48,7 @@ window.addEventListener('load', () => {
         console.error("Error accessing camera:", error);
         alert("Camera access error. Please check your camera and permissions.");
     });
-});
+}
 
 // Display the content based on QR code URL
 function displayContent(content) {
@@ -67,4 +74,12 @@ function displayContent(content) {
         // Handle unsupported content types
         alert('Unsupported content type. Please scan a valid QR code');
     }
+
+    // Show the rescan button after content is displayed
+    rescanButton.style.display = 'block';
+
+    // Alternatively, auto-restart the scanner after 5 seconds (you can adjust the time)
+    setTimeout(() => {
+        rescanButton.style.display = 'block'; // Make the rescan button visible
+    }, 5000);  // Adjust the time delay as needed
 }
