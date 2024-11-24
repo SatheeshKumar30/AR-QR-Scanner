@@ -3,24 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Scanner</title>
-  <!-- Link to external CSS file for styling -->
-  <link rel="stylesheet" href="styles.css">
+  <title>QR Code Scanner with AR</title>
+  
+  <!-- Include AR.js and Three.js for AR functionality -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.125.1/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ar.js/aframe/build/aframe-ar.js"></script>
+  
   <!-- Include jsQR for QR code scanning -->
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    video {
+      display: none; /* Hide the video stream */
+    }
+  </style>
 </head>
 <body>
 
-  <h1>QR Code Scanner</h1>
-  
-  <!-- Video element for scanning QR code -->
+  <!-- QR Code scanning video feed -->
   <video id="video" width="320" height="240" autoplay></video>
-  
-  <!-- Area to show decoded QR code content -->
-  <div id="output"></div>
 
-  <!-- Link to external JavaScript file for functionality -->
-  <script src="script.js"></script>
+  <!-- AR.js (A-Frame) scene to display AR content -->
+  <a-scene embedded arjs>
+    <a-marker preset="hiro">
+      <a-image id="qrImage" width="2" height="2" position="0 0 0" src="" scale="2 2 2"></a-image>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script src="app.js"></script>
 
 </body>
 </html>
