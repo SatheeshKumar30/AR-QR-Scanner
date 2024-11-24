@@ -8,6 +8,9 @@ const imagePlaceholder = document.getElementById('image-placeholder');
 const scanner = document.getElementById('scanner');
 const rescanButton = document.getElementById('rescan-button');
 
+// Variable to hold the media stream (to stop the camera later)
+let currentStream;
+
 // Start the QR scanner as soon as the page loads
 window.addEventListener('load', () => {
     startScanner();
@@ -19,11 +22,18 @@ function startScanner() {
     scanner.style.display = 'flex';
     rescanButton.style.display = 'none'; // Hide the rescan button initially
 
+    // If there's a previous stream, stop it first
+    if (currentStream) {
+        const tracks = currentStream.getTracks();
+        tracks.forEach(track => track.stop());
+    }
+
     // Start the camera stream
     navigator.mediaDevices.getUserMedia({
         video: { facingMode: { exact: "environment" } } // Use back camera
     }).then(stream => {
         video.srcObject = stream;
+        currentStream = stream; // Save the current stream for stopping later
 
         // Start scanning at intervals
         setInterval(() => {
@@ -75,11 +85,20 @@ function displayContent(content) {
         alert('Unsupported content type. Please scan a valid QR code');
     }
 
-    // Show the rescan button after content is displayed
+    // Show the re-scan button after content is displayed
     rescanButton.style.display = 'block';
-
-    // Alternatively, auto-restart the scanner after 5 seconds (you can adjust the time)
-    setTimeout(() => {
-        rescanButton.style.display = 'block'; // Make the rescan button visible
-    }, 5000);  // Adjust the time delay as needed
 }
+
+// Re-enable the scanner when the re-scan button is clicked
+rescanButton.addEventListener('click', () => {
+    // Reset the scanner display
+    imageContainer.style.display = "none"; // Hide the image container
+    modelContainer.style.display = "none"; // Hide the 3D model container
+    scanner.style.display = "flex"; // Show the scanner
+
+    // Hide the rescan button
+    rescanButton.style.display = 'none';
+
+    // Restart the QR scanner
+    startScanner();
+});
