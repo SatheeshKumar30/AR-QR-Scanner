@@ -1,56 +1,38 @@
-const video = document.getElementById('qr-video');
-const canvas = document.getElementById('qr-canvas');
+// Get references to video, canvas, and the AR image
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
-const arContainer = document.getElementById('ar-container');
-const imagePlaceholder = document.getElementById('image-placeholder');
+const arImage = document.getElementById('arImage');
 
-// Start the QR scanner as soon as the page loads
-window.addEventListener('load', () => {
-    // Show the scanner
-    document.getElementById('scanner').style.display = 'flex';
+// Set up video stream for QR code scanning
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then((stream) => {
+    video.srcObject = stream;
+    video.setAttribute('playsinline', true);
+    video.play();
+    scanQRCode();  // Start scanning for QR code
+  })
+  .catch((err) => {
+    console.error("Error accessing webcam: ", err);
+  });
 
-    // Start the camera stream
-    navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { exact: "environment" } } // Use back camera
-    }).then(stream => {
-        video.srcObject = stream;
+// Function to scan QR code using the video stream
+function scanQRCode() {
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const code = jsQR(imageData.data, canvas.width, canvas.height);
 
-        // Start scanning at intervals
-        setInterval(() => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  if (code) {
+    const qrContent = code.data;
+    // Handle QR content (we expect it to be an image URL or base64 data)
+    loadImageIntoAR(qrContent);
+  } else {
+    requestAnimationFrame(scanQRCode);  // Continue scanning
+  }
+}
 
-            // Get image data and scan QR
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            const code = jsQR(imageData.data, imageData.width, imageData.height);
-
-            // If QR code is detected
-            if (code) {
-                console.log('QR Code detected:', code.data);
-                displayContent(code.data); // Show content based on QR code URL
-            }
-        }, 500);
-    }).catch(error => {
-        console.error("Error accessing camera:", error);
-        alert("Camera access error. Please check your camera and permissions.");
-    });
-});
-
-// Display the content based on QR code URL
-function displayContent(content) {
-    console.log('QR Code Content:', content);  // Log the content of the QR code
-
-    // Check if the URL points to an image (e.g., JPG, PNG)
-    if (content.endsWith('.jpg') || content.endsWith('.jpeg') || content.endsWith('.png')) {
-        // Display image in AR
-        arContainer.style.display = "block"; // Show the AR container
-        imagePlaceholder.setAttribute('geometry', 'primitive: plane; width: 4; height: 3');
-        imagePlaceholder.setAttribute('material', 'src: url(' + content + ')');
-        imagePlaceholder.setAttribute('scale', '1 1 1');
-        imagePlaceholder.setAttribute('rotation', '0 45 0'); // Optional rotation
-    } else {
-        // Handle unsupported content types
-        alert('Unsupported content type. Please scan a valid QR code');
-    }
+// Function to load the image into the AR world
+function loadImageIntoAR(qrContent) {
+  const imageUrl = qrContent;  // The QR content should be the image URL or base64 data
+  arImage.setAttribute('src', imageUrl);  // Set the image source in AR
 }
