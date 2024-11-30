@@ -28,7 +28,7 @@ window.addEventListener('load', () => {
 
             // If QR code is detected
             if (code) {
-                console.log('QR Code detected:', code.data);
+                console.log('QR Code detected:', code.data);  // Log the content of the QR code
                 handleQRCode(code.data); // Handle QR Code content
             }
         }, 500);
@@ -39,7 +39,9 @@ window.addEventListener('load', () => {
 
 // Handle QR Code Content
 function handleQRCode(content) {
-    // Assume content is a valid URL pointing to a 3D model
+    console.log("QR Code Content:", content); // Log the QR code content
+
+    // Check if the content ends with .glb or .gltf for 3D models
     if (content.endsWith('.glb') || content.endsWith('.gltf')) {
         // Hide scanner and show AR container
         scanner.style.display = 'none';
