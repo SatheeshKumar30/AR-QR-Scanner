@@ -3,51 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Image with Three.js</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <title>Mobile Camera with Virtual 3D</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
+            font-family: Arial, sans-serif;
         }
-        canvas {
-            display: block;
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(to bottom, #87CEEB, #2E8B57); /* Sky to grass */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        video {
+            position: absolute;
+            width: 90%;
+            height: auto;
+            max-width: 600px;
+            border: 5px solid white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .virtual-world {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/virtual-world.jpg'); /* Replace with your virtual world image */
+            background-size: cover;
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            video {
+                width: 100%;
+                height: auto;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="virtual-world"></div>
+        <video id="camera-feed" autoplay playsinline></video>
+    </div>
+
     <script>
-        // Scene setup
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+        // Access the camera and stream the video
+        const videoElement = document.getElementById('camera-feed');
 
-        // Geometry and material
-        const geometry = new THREE.BoxGeometry();
-        const texture = new THREE.TextureLoader().load('https://via.placeholder.com/512');
-        const material = new THREE.MeshBasicMaterial({ map: texture });
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
-
-        camera.position.z = 5;
-
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
-            renderer.render(scene, camera);
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    videoElement.srcObject = stream;
+                })
+                .catch(function (error) {
+                    console.error("Error accessing the camera:", error);
+                    alert("Unable to access the camera. Please check permissions.");
+                });
+        } else {
+            alert("Camera not supported on this device or browser.");
         }
-        animate();
-
-        // Adjust canvas on resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
     </script>
 </body>
 </html>
